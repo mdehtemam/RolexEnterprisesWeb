@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingBag, User, LogOut, LayoutDashboard, Laptop, Backpack, Mail, Plane, Gift, ChevronDown } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Menu, X, ShoppingBag, User, LogOut, LayoutDashboard, Laptop, Backpack, Mail, Plane, Gift } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuoteCart } from '@/contexts/QuoteCartContext';
@@ -11,44 +11,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
+import { cn } from '@/lib/utils';
 
 const productCategories = [
-  { name: 'Laptop Bags', slug: 'laptop-bags', icon: Laptop },
-  { name: 'Backpacks', slug: 'backpacks', icon: Backpack },
-  { name: 'Sling / Messenger Bags', slug: 'messenger-bags', icon: Mail },
-  { name: 'Travel / Trolley Bags', slug: 'travel-bags', icon: Plane },
-  { name: 'Custom / Promotional Bags', slug: 'promotional', icon: Gift },
+  { name: 'Laptop Bags', slug: 'laptop-bags', icon: Laptop, description: 'Professional bags for laptops' },
+  { name: 'Backpacks', slug: 'backpacks', icon: Backpack, description: 'Ergonomic corporate backpacks' },
+  { name: 'Sling / Messenger Bags', slug: 'messenger-bags', icon: Mail, description: 'Stylish messenger bags' },
+  { name: 'Travel / Trolley Bags', slug: 'travel-bags', icon: Plane, description: 'Premium travel solutions' },
+  { name: 'Custom / Promotional Bags', slug: 'promotional', icon: Gift, description: 'Branded promotional bags' },
 ];
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [productsOpen, setProductsOpen] = useState(false);
-  const closeProductsTimerRef = useRef<number | null>(null);
   const { user, profile, isAdmin, signOut } = useAuth();
   const { totalItems } = useQuoteCart();
   const navigate = useNavigate();
-
-  const openProductsMenu = () => {
-    if (closeProductsTimerRef.current) {
-      window.clearTimeout(closeProductsTimerRef.current);
-      closeProductsTimerRef.current = null;
-    }
-    setProductsOpen(true);
-  };
-
-  const scheduleCloseProductsMenu = () => {
-    if (closeProductsTimerRef.current) window.clearTimeout(closeProductsTimerRef.current);
-    closeProductsTimerRef.current = window.setTimeout(() => {
-      setProductsOpen(false);
-      closeProductsTimerRef.current = null;
-    }, 140);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (closeProductsTimerRef.current) window.clearTimeout(closeProductsTimerRef.current);
-    };
-  }, []);
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -77,57 +62,65 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            {navLinks.slice(0, 1).map((link) => (
-              <Link
-                key={link.name}
-                to={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.name}
-              </Link>
-            ))}
-            
-            {/* Products Dropdown */}
-            <div 
-              onPointerEnter={openProductsMenu}
-              onPointerLeave={scheduleCloseProductsMenu}
+            <Link
+              to="/"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              <DropdownMenu open={productsOpen} onOpenChange={setProductsOpen}>
-                <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors outline-none">
-                  Products
-                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${productsOpen ? 'rotate-180' : ''}`} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="start"
-                  className="w-64 bg-popover"
-                  onPointerEnter={openProductsMenu}
-                  onPointerLeave={scheduleCloseProductsMenu}
-                >
-                <DropdownMenuItem asChild>
-                  <Link to="/products" className="flex items-center gap-3 cursor-pointer group">
-                    <div className="p-1.5 rounded-md bg-primary/10 transition-all duration-200 group-hover:bg-primary group-hover:scale-110">
-                      <ShoppingBag className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
-                    </div>
-                    <span className="font-medium transition-colors group-hover:text-primary">All Products</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                {productCategories.map((category) => (
-                  <DropdownMenuItem key={category.slug} asChild>
-                    <Link 
-                      to={`/products?category=${category.slug}`} 
-                      className="flex items-center gap-3 cursor-pointer group"
-                    >
-                      <div className="p-1.5 rounded-md bg-primary/10 transition-all duration-200 group-hover:bg-primary group-hover:scale-110">
-                        <category.icon className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
-                      </div>
-                      <span className="transition-colors group-hover:text-primary">{category.name}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            </div>
+              Home
+            </Link>
+            
+            {/* Products Dropdown - NavigationMenu for hover */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-sm font-medium text-muted-foreground hover:text-foreground data-[state=open]:text-foreground h-auto px-0 py-0">
+                    Products
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                      <li className="col-span-2">
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/products"
+                            className="flex items-center gap-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground group"
+                          >
+                            <div className="p-2 rounded-md bg-primary/10 transition-all duration-200 group-hover:bg-primary group-hover:scale-110">
+                              <ShoppingBag className="h-5 w-5 text-primary transition-colors group-hover:text-primary-foreground" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium leading-none">All Products</div>
+                              <p className="line-clamp-1 text-sm leading-snug text-muted-foreground mt-1">
+                                Browse our complete catalog
+                              </p>
+                            </div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      {productCategories.map((category) => (
+                        <li key={category.slug}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to={`/products?category=${category.slug}`}
+                              className="flex items-center gap-3 select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground group"
+                            >
+                              <div className="p-2 rounded-md bg-primary/10 transition-all duration-200 group-hover:bg-primary group-hover:scale-110">
+                                <category.icon className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
+                              </div>
+                              <div>
+                                <div className="text-sm font-medium leading-none">{category.name}</div>
+                                <p className="line-clamp-1 text-xs leading-snug text-muted-foreground mt-1">
+                                  {category.description}
+                                </p>
+                              </div>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
 
             {navLinks.slice(1).map((link) => (
               <Link
