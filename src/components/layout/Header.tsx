@@ -71,11 +71,11 @@ export function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-64 bg-popover">
                 <DropdownMenuItem asChild>
-                  <Link to="/products" className="flex items-center gap-3 cursor-pointer">
-                    <div className="p-1.5 rounded-md bg-primary/10">
-                      <ShoppingBag className="h-4 w-4 text-primary" />
+                  <Link to="/products" className="flex items-center gap-3 cursor-pointer group">
+                    <div className="p-1.5 rounded-md bg-primary/10 transition-all duration-200 group-hover:bg-primary group-hover:scale-110">
+                      <ShoppingBag className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
                     </div>
-                    <span className="font-medium">All Products</span>
+                    <span className="font-medium transition-colors group-hover:text-primary">All Products</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -83,12 +83,12 @@ export function Header() {
                   <DropdownMenuItem key={category.slug} asChild>
                     <Link 
                       to={`/products?category=${category.slug}`} 
-                      className="flex items-center gap-3 cursor-pointer"
+                      className="flex items-center gap-3 cursor-pointer group"
                     >
-                      <div className="p-1.5 rounded-md bg-primary/10">
-                        <category.icon className="h-4 w-4 text-primary" />
+                      <div className="p-1.5 rounded-md bg-primary/10 transition-all duration-200 group-hover:bg-primary group-hover:scale-110">
+                        <category.icon className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
                       </div>
-                      <span>{category.name}</span>
+                      <span className="transition-colors group-hover:text-primary">{category.name}</span>
                     </Link>
                   </DropdownMenuItem>
                 ))}
