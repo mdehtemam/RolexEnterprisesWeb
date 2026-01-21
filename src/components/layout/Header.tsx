@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingBag, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Menu, X, ShoppingBag, User, LogOut, LayoutDashboard, Laptop, Backpack, Mail, Plane, Gift, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,6 +12,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+const productCategories = [
+  { name: 'Laptop Bags', slug: 'laptop-bags', icon: Laptop },
+  { name: 'Backpacks', slug: 'backpacks', icon: Backpack },
+  { name: 'Sling / Messenger Bags', slug: 'messenger-bags', icon: Mail },
+  { name: 'Travel / Trolley Bags', slug: 'travel-bags', icon: Plane },
+  { name: 'Custom / Promotional Bags', slug: 'promotional', icon: Gift },
+];
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, profile, isAdmin, signOut } = useAuth();
@@ -20,7 +28,6 @@ export function Header() {
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Products', href: '/products' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -46,7 +53,49 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
+            {navLinks.slice(0, 1).map((link) => (
+              <Link
+                key={link.name}
+                to={link.href}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+            
+            {/* Products Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors outline-none">
+                Products
+                <ChevronDown className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64 bg-popover">
+                <DropdownMenuItem asChild>
+                  <Link to="/products" className="flex items-center gap-3 cursor-pointer">
+                    <div className="p-1.5 rounded-md bg-primary/10">
+                      <ShoppingBag className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="font-medium">All Products</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {productCategories.map((category) => (
+                  <DropdownMenuItem key={category.slug} asChild>
+                    <Link 
+                      to={`/products?category=${category.slug}`} 
+                      className="flex items-center gap-3 cursor-pointer"
+                    >
+                      <div className="p-1.5 rounded-md bg-primary/10">
+                        <category.icon className="h-4 w-4 text-primary" />
+                      </div>
+                      <span>{category.name}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {navLinks.slice(1).map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
@@ -133,7 +182,38 @@ export function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden border-t py-4">
             <nav className="flex flex-col gap-2">
-              {navLinks.map((link) => (
+              <Link
+                to="/"
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <div className="px-4 py-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Products</p>
+                <div className="flex flex-col gap-1 pl-2">
+                  <Link
+                    to="/products"
+                    className="flex items-center gap-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <ShoppingBag className="h-4 w-4" />
+                    All Products
+                  </Link>
+                  {productCategories.map((category) => (
+                    <Link
+                      key={category.slug}
+                      to={`/products?category=${category.slug}`}
+                      className="flex items-center gap-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <category.icon className="h-4 w-4" />
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              {navLinks.slice(1).map((link) => (
                 <Link
                   key={link.name}
                   to={link.href}
