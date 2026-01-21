@@ -22,6 +22,7 @@ const productCategories = [
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
   const { user, profile, isAdmin, signOut } = useAuth();
   const { totalItems } = useQuoteCart();
   const navigate = useNavigate();
@@ -64,12 +65,16 @@ export function Header() {
             ))}
             
             {/* Products Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors outline-none">
-                Products
-                <ChevronDown className="h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-64 bg-popover">
+            <div 
+              onMouseEnter={() => setProductsOpen(true)} 
+              onMouseLeave={() => setProductsOpen(false)}
+            >
+              <DropdownMenu open={productsOpen} onOpenChange={setProductsOpen}>
+                <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors outline-none">
+                  Products
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${productsOpen ? 'rotate-180' : ''}`} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-64 bg-popover" onMouseEnter={() => setProductsOpen(true)} onMouseLeave={() => setProductsOpen(false)}>
                 <DropdownMenuItem asChild>
                   <Link to="/products" className="flex items-center gap-3 cursor-pointer group">
                     <div className="p-1.5 rounded-md bg-primary/10 transition-all duration-200 group-hover:bg-primary group-hover:scale-110">
@@ -94,6 +99,7 @@ export function Header() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
 
             {navLinks.slice(1).map((link) => (
               <Link
