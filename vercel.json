@@ -1,9 +1,11 @@
 {
+  "projectId": "prj_XXXXXXXXXXXXXXXXXXXX",
+  "orgId": "team_XXXXXXXXXXXXXXXXXXXX",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "env": {
     "VITE_SUPABASE_URL": "@vite_supabase_url",
     "VITE_SUPABASE_PUBLISHABLE_KEY": "@vite_supabase_publishable_key"
-  },
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install"
+  }
 }
