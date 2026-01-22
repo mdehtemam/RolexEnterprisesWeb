@@ -1,22 +1,16 @@
-# Welcome to your Lovable project
+# Welcome to Rolex Enterprises Web
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**URL**: http://localhost:5173 (development)
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Development (local)**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Work locally using your preferred IDE. Clone this repo, install dependencies and run the dev server.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -74,12 +68,13 @@ After running the admin setup migration, you can log in with these credentials t
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Deploy with Vercel, Netlify, or your preferred hosting provider. See [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) for guidance.
 
-## Can I connect a custom domain to my Lovable project?
+## Can I connect a custom domain?
 
-Yes, you can!
+Yes. Follow your hosting provider's domain setup instructions (for example, Vercel's custom domain docs).
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Helpful docs:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- Vercel: https://vercel.com/docs/platform/deployments
+- Netlify: https://docs.netlify.com
