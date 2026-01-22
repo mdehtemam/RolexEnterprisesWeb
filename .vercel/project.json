@@ -2,9 +2,10 @@
   "projectId": "prj_rolex_enterprises_web",
   "orgId": "md-ehtemams-projects",
   "settings": {
-    "buildCommand": "npm run build",
+    "buildCommand": "npm install && npm run build",
     "devCommand": "npm run dev",
-    "installCommand": "npm install",
-    "outputDirectory": "dist"
+    "installCommand": "npm install --legacy-peer-deps",
+    "outputDirectory": "dist",
+    "nodeVersion": "18.x"
   }
 }
