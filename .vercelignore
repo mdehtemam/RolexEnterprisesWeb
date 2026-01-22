@@ -1,0 +1,16 @@
+node_modules
+.git
+.gitignore
+.env.local
+.env
+dist
+src
+supabase
+public
+*.md
+.eslintrc.cjs
+vite.config.ts
+tsconfig*.json
+postcss.config.js
+tailwind.config.ts
+vitest.config.ts
