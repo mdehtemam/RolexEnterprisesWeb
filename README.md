@@ -59,6 +59,18 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase (Authentication & Database)
+
+## Admin Access
+
+Default admin credentials are configured. See [ADMIN_SETUP.md](./ADMIN_SETUP.md) for details.
+
+**Admin Login:**
+- Email: `rolexenterprises.corp@gmail.com`
+- Password: `Batadiya@123`
+- Phone: `8447780862`
+
+After running the admin setup migration, you can log in with these credentials to access the admin panel.
 
 ## How can I deploy this project?
 

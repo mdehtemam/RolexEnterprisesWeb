@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Settings } from 'lucide-react';
 
 interface Quote {
   id: string;
@@ -12,7 +15,7 @@ interface Quote {
 }
 
 export default function Dashboard() {
-  const { user, profile, isLoading: authLoading } = useAuth();
+  const { user, profile, isLoading: authLoading, isAdmin } = useAuth();
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -21,12 +24,15 @@ export default function Dashboard() {
   }, [user]);
 
   async function fetchQuotes() {
-    const { data } = await supabase
-      .from('quotes')
-      .select('*')
-      .order('created_at', { ascending: false });
+    if (!user) return;
 
-    if (data) setQuotes(data);
+    if (isAdmin) {
+      const { data } = await supabase.from('quotes').select('*').order('created_at', { ascending: false });
+      if (data) setQuotes(data as Quote[]);
+    } else {
+      const { data } = await supabase.from('quotes').select('*').eq('user_id', profile?.user_id).order('created_at', { ascending: false });
+      if (data) setQuotes(data as Quote[]);
+    }
     setIsLoading(false);
   }
 
@@ -37,8 +43,20 @@ export default function Dashboard() {
     <Layout>
       <div className="section-padding">
         <div className="container-corporate">
-          <h1 className="text-3xl font-bold mb-2">Corporate Dashboard</h1>
-          <p className="text-muted-foreground mb-8">Welcome back, {profile?.name}</p>
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Corporate Dashboard</h1>
+              <p className="text-muted-foreground">Welcome back, {profile?.name}</p>
+            </div>
+            {isAdmin && (
+              <Link to="/admin">
+                <Button className="gap-2">
+                  <Settings className="w-4 h-4" />
+                  Admin Panel
+                </Button>
+              </Link>
+            )}
+          </div>
 
           <div className="card-corporate p-6">
             <h2 className="text-xl font-semibold mb-4">Your Quote Requests</h2>

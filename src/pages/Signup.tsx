@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 
 export default function Signup() {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -19,16 +20,23 @@ export default function Signup() {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signUp(phone, password, name);
+    try {
+      const { error } = await signUp(email, password, name, phone);
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Account created successfully!');
-      navigate('/dashboard');
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success('Account created successfully! Logging you in...');
+        // Small delay to show success message
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -49,6 +57,18 @@ export default function Signup() {
                 placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="john@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>

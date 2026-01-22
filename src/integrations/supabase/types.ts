@@ -38,6 +38,47 @@ export type Database = {
         }
         Relationships: []
       }
+      contacts: {
+        Row: {
+          admin_response: string | null
+          created_at: string
+          id: string
+          message: string
+          product_id: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_response?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          product_id?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_response?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          product_id?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_images: {
         Row: {
           created_at: string
@@ -45,6 +86,7 @@ export type Database = {
           image_url: string
           is_primary: boolean | null
           product_id: string
+          variant_id: string | null
         }
         Insert: {
           created_at?: string
@@ -52,6 +94,7 @@ export type Database = {
           image_url: string
           is_primary?: boolean | null
           product_id: string
+          variant_id?: string | null
         }
         Update: {
           created_at?: string
@@ -59,6 +102,7 @@ export type Database = {
           image_url?: string
           is_primary?: boolean | null
           product_id?: string
+          variant_id?: string | null
         }
         Relationships: [
           {
@@ -66,6 +110,13 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_images_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
             referencedColumns: ["id"]
           },
         ]
@@ -83,7 +134,9 @@ export type Database = {
           material: string | null
           moq: number | null
           name: string
+          rate: number | null
           size: string | null
+          sku: string | null
           updated_at: string
         }
         Insert: {
@@ -98,7 +151,9 @@ export type Database = {
           material?: string | null
           moq?: number | null
           name: string
+          rate?: number | null
           size?: string | null
+          sku?: string | null
           updated_at?: string
         }
         Update: {
@@ -113,7 +168,9 @@ export type Database = {
           material?: string | null
           moq?: number | null
           name?: string
+          rate?: number | null
           size?: string | null
+          sku?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -122,6 +179,44 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_variants: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          image_url: string | null
+          product_id: string
+          sku: string
+          updated_at: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          product_id: string
+          sku: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          product_id?: string
+          sku?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]

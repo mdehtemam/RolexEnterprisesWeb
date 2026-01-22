@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, DEMO_MODE } from '@/integrations/supabase/client';
+import { MOCK_USER, MOCK_PROFILE } from '@/integrations/supabase/mockData';
+import { toast } from 'sonner';
 
 interface Profile {
   id: string;
@@ -15,8 +17,8 @@ interface AuthContextType {
   profile: Profile | null;
   isAdmin: boolean;
   isLoading: boolean;
-  signUp: (phone: string, password: string, name: string) => Promise<{ error: Error | null }>;
-  signIn: (phone: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, name: string, phone: string) => Promise<{ error: Error | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -92,12 +94,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function signUp(phone: string, password: string, name: string) {
+  async function signUp(email: string, password: string, name: string, phone: string) {
     try {
-      // Use email format with phone for Supabase Auth
-      const email = `${phone.replace(/\D/g, '')}@rolex-enterprises.com`;
-      
-      const { error } = await supabase.auth.signUp({
+      // Demo mode: mock signup
+      if (DEMO_MODE) {
+        console.log('🔧 [DEMO] Signup:', { email, name, phone });
+        localStorage.setItem('auth_user', JSON.stringify({ ...MOCK_USER, email, phone, name }));
+        localStorage.setItem('auth_profile', JSON.stringify({ ...MOCK_PROFILE, phone, name }));
+        localStorage.setItem('auth_token', 'demo-token');
+        toast.success('Demo account created!');
+        setUser(MOCK_USER as any);
+        setProfile(MOCK_PROFILE as any);
+        setIsAdmin(true);
+        return { error: null };
+      }
+
+      // Create user account
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -105,20 +118,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             name,
             phone,
           },
-          emailRedirectTo: window.location.origin,
         },
       });
 
-      return { error: error ? new Error(error.message) : null };
+      if (error) return { error: new Error(error.message) };
+
+      // If user created, also create a profile row and default user role
+      try {
+        const userId = data.user?.id;
+        if (userId) {
+          // Create profile
+          await supabase.from('profiles').insert({ user_id: userId, name, phone });
+          // Create user role
+          await supabase.from('user_roles').insert({ user_id: userId, role: 'user' });
+          
+          // Auto-confirm email by directly signing in
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (!signInError) {
+            setUser(data.user);
+            toast.success('Account created and logged in!');
+            return { error: null };
+          }
+        }
+      } catch (e) {
+        console.error('Failed to create profile or role:', e);
+      }
+
+      return { error: null };
     } catch (error) {
       return { error: error as Error };
     }
   }
 
-  async function signIn(phone: string, password: string) {
+  async function signIn(email: string, password: string) {
     try {
-      const email = `${phone.replace(/\D/g, '')}@rolex-enterprises.com`;
-      
+      // Demo mode: mock signin
+      if (DEMO_MODE) {
+        console.log('🔧 [DEMO] Sign in:', { email });
+        localStorage.setItem('auth_user', JSON.stringify(MOCK_USER));
+        localStorage.setItem('auth_profile', JSON.stringify(MOCK_PROFILE));
+        localStorage.setItem('auth_token', 'demo-token');
+        toast.success('Demo login successful!');
+        setUser(MOCK_USER as any);
+        setProfile(MOCK_PROFILE as any);
+        setIsAdmin(true);
+        return { error: null };
+      }
+
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -131,7 +181,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signOut() {
-    await supabase.auth.signOut();
+    if (DEMO_MODE) {
+      console.log('🔧 [DEMO] Sign out');
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_profile');
+      localStorage.removeItem('auth_token');
+      toast.success('Logged out');
+    } else {
+      await supabase.auth.signOut();
+    }
     setUser(null);
     setSession(null);
     setProfile(null);

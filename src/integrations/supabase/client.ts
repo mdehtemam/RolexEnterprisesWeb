@@ -5,13 +5,40 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+// Use real Supabase (DEMO_MODE disabled)
+const DEMO_MODE = false;
+
+if (!SUPABASE_URL) {
+  console.error('❌ Missing VITE_SUPABASE_URL environment variable');
+}
+
+if (!SUPABASE_PUBLISHABLE_KEY) {
+  console.error('❌ Missing VITE_SUPABASE_PUBLISHABLE_KEY environment variable');
+}
+
+if (SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY) {
+  console.log('✅ Connected to Supabase:', SUPABASE_URL);
+}
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
+export const supabase = createClient<Database>(
+  SUPABASE_URL || 'https://placeholder.supabase.co',
+  SUPABASE_PUBLISHABLE_KEY || 'placeholder-key',
+  {
+    auth: {
+      storage: localStorage,
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+    global: {
+      fetch: async (url, options) => {
+        console.log('📡 Supabase API call:', url);
+        return fetch(url, options);
+      }
+    }
   }
-});
+);
+
+export { DEMO_MODE };

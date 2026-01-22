@@ -34,7 +34,8 @@
     --muted-foreground: 215 16% 47%;
 
     /* Accent - Corporate Blue */
-    --accent: 217 91% 60%;
+    --accent: 210 75% 86%;
+    --accent-hover: 210 65% 76%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -85,7 +86,8 @@
     --muted: 222 35% 15%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 217 91% 60%;
+    --accent: 210 75% 86%;
+    --accent-hover: 210 65% 76%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 31%;
