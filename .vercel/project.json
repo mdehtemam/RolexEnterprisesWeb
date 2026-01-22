@@ -1,0 +1,10 @@
+{
+  "projectId": "prj_rolex_enterprises_web",
+  "orgId": "md-ehtemams-projects",
+  "settings": {
+    "buildCommand": "npm run build",
+    "devCommand": "npm run dev",
+    "installCommand": "npm install",
+    "outputDirectory": "dist"
+  }
+}
