@@ -8,16 +8,14 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 // Use real Supabase (DEMO_MODE disabled)
 const DEMO_MODE = false;
 
-if (!SUPABASE_URL) {
-  console.error('❌ Missing VITE_SUPABASE_URL environment variable');
-}
-
-if (!SUPABASE_PUBLISHABLE_KEY) {
-  console.error('❌ Missing VITE_SUPABASE_PUBLISHABLE_KEY environment variable');
-}
-
-if (SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY) {
-  console.log('✅ Connected to Supabase:', SUPABASE_URL);
+// Environment validation - only in development
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
+  if (!SUPABASE_URL) {
+    console.warn('⚠️ VITE_SUPABASE_URL not configured');
+  }
+  if (!SUPABASE_PUBLISHABLE_KEY) {
+    console.warn('⚠️ VITE_SUPABASE_PUBLISHABLE_KEY not configured');
+  }
 }
 
 // Import the supabase client like this:
@@ -34,7 +32,9 @@ export const supabase = createClient<Database>(
     },
     global: {
       fetch: async (url, options) => {
-        console.log('📡 Supabase API call:', url);
+        if (import.meta.env.DEV) {
+          console.log('📡 Supabase API call:', url);
+        }
         return fetch(url, options);
       }
     }

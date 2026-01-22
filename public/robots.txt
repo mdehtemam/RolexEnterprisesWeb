@@ -1,8 +1,11 @@
-User-agent: Googlebot
+User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+Crawl-delay: 1
 
-User-agent: Bingbot
-Allow: /
+Sitemap: https://rolex-enterprises.vercel.app/sitemap.xml
 
 User-agent: Twitterbot
 Allow: /
